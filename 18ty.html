@@ -2,32 +2,30 @@
 <html lang="zh-CN">
 <head>
     <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>18脱衣</title>
     <style>
         :root {
             --bg-color: #121212;
             --text-color: #ffffff;
             --accent-color: #bb86fc;
-            --nav-bg: #1e1e1e;
-            --card-bg: #2d2d2d;
+            --secondary-bg: #1e1e1e;
         }
-
+        
         [data-theme="light"] {
-            --bg-color: #f5f5f5;
-            --text-color: #333333;
+            --bg-color: #ffffff;
+            --text-color: #121212;
             --accent-color: #6200ee;
-            --nav-bg: #ffffff;
-            --card-bg: #e0e0e0;
+            --secondary-bg: #f5f5f5;
         }
-
+        
         * {
             margin: 0;
             padding: 0;
             box-sizing: border-box;
             transition: background-color 0.3s, color 0.3s;
         }
-
+        
         body {
             font-family: 'Arial', sans-serif;
             background-color: var(--bg-color);
@@ -36,74 +34,82 @@
             display: flex;
             flex-direction: column;
         }
-
-        .navbar {
+        
+        header {
             display: flex;
             justify-content: space-between;
             align-items: center;
-            padding: 15px;
-            background-color: var(--nav-bg);
+            padding: 15px 20px;
+            background-color: var(--secondary-bg);
             position: sticky;
             top: 0;
             z-index: 100;
             box-shadow: 0 2px 10px rgba(0, 0, 0, 0.2);
         }
-
+        
         .logo {
-            font-family: 'Arial Black', sans-serif;
-            font-size: 1.5rem;
+            font-size: 24px;
             font-weight: bold;
-            color: var(--accent-color);
-            text-shadow: 0 0 10px rgba(187, 134, 252, 0.5);
-            text-align: center;
-            flex-grow: 1;
+            background: linear-gradient(45deg, #ff00ff, #00ffff);
+            -webkit-background-clip: text;
+            background-clip: text;
+            color: transparent;
+            text-shadow: 0 0 10px rgba(255, 0, 255, 0.3);
         }
-
-        .theme-toggle, .menu-toggle {
+        
+        .theme-toggle {
             background: none;
             border: none;
             color: var(--text-color);
-            font-size: 1.2rem;
+            font-size: 24px;
             cursor: pointer;
             padding: 5px;
         }
-
+        
         .menu-toggle {
+            background: none;
+            border: none;
+            color: var(--text-color);
+            font-size: 24px;
+            cursor: pointer;
+            padding: 5px;
             position: relative;
             z-index: 101;
         }
-
-        .menu-items {
+        
+        .menu {
             position: fixed;
             top: 0;
-            right: -100%;
-            width: 70%;
+            right: -250px;
+            width: 250px;
             height: 100vh;
-            background-color: var(--nav-bg);
-            padding: 80px 20px 20px;
+            background-color: var(--secondary-bg);
+            box-shadow: -5px 0 15px rgba(0, 0, 0, 0.2);
             transition: right 0.3s;
             z-index: 100;
-            box-shadow: -5px 0 15px rgba(0, 0, 0, 0.2);
+            padding: 80px 20px 20px;
+            display: flex;
+            flex-direction: column;
         }
-
-        .menu-items.active {
+        
+        .menu.active {
             right: 0;
         }
-
+        
         .menu-item {
-            display: block;
             padding: 15px;
             color: var(--text-color);
             text-decoration: none;
-            font-size: 1.2rem;
+            font-size: 18px;
             border-bottom: 1px solid rgba(255, 255, 255, 0.1);
+            transition: color 0.3s;
         }
-
+        
         .menu-item:hover {
             color: var(--accent-color);
         }
-
-        .content {
+        
+        main {
             flex: 1;
             padding: 20px;
             display: flex;
@@ -111,238 +117,335 @@
             align-items: center;
             justify-content: center;
         }
-
+        
         .page {
             width: 100%;
+            max-width: 500px;
             display: none;
+            flex-direction: column;
+            align-items: center;
         }
-
+        
         .page.active {
-            display: block;
+            display: flex;
         }
-
-        .upload-container {
-            width: 100%;
-            max-width: 400px;
-            margin: 0 auto;
-            text-align: center;
-        }
-
+        
         .upload-btn {
             background-color: var(--accent-color);
             color: white;
             border: none;
             padding: 15px 30px;
-            font-size: 1.2rem;
+            font-size: 18px;
             border-radius: 50px;
             cursor: pointer;
             margin: 20px 0;
-            box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+            box-shadow: 0 4px 15px rgba(0, 0, 0, 0.2);
             transition: transform 0.2s, box-shadow 0.2s;
         }
-
+        
         .upload-btn:active {
             transform: scale(0.95);
-            box-shadow: 0 2px 3px rgba(0, 0, 0, 0.1);
+            box-shadow: 0 2px 10px rgba(0, 0, 0, 0.2);
         }
-
+        
         .preview-container {
             width: 100%;
-            max-width: 400px;
-            margin: 20px auto;
+            max-width: 300px;
+            height: 300px;
+            border: 2px dashed var(--accent-color);
+            border-radius: 10px;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            margin: 20px 0;
+            overflow: hidden;
+            position: relative;
+        }
+        
+        .preview-image {
+            max-width: 100%;
+            max-height: 100%;
             display: none;
         }
-
-        .preview-image {
+        
+        .progress-container {
             width: 100%;
-            border-radius: 10px;
-            box-shadow: 0 4px 15px rgba(0, 0, 0, 0.2);
-        }
-
-        .status {
+            max-width: 300px;
             margin: 20px 0;
-            font-size: 1.2rem;
+            display: none;
+        }
+        
+        .progress-text {
             text-align: center;
-            min-height: 24px;
+            margin-bottom: 10px;
         }
-
+        
+        .progress-bar {
+            width: 100%;
+            height: 10px;
+            background-color: var(--secondary-bg);
+            border-radius: 5px;
+            overflow: hidden;
+        }
+        
+        .progress-fill {
+            height: 100%;
+            width: 0%;
+            background-color: var(--accent-color);
+            transition: width 0.1s;
+        }
+        
+        .result-message {
+            text-align: center;
+            margin: 20px 0;
+            font-size: 18px;
+            display: none;
+        }
+        
+        .retry-btn {
+            background-color: var(--accent-color);
+            color: white;
+            border: none;
+            padding: 10px 20px;
+            font-size: 16px;
+            border-radius: 50px;
+            cursor: pointer;
+            margin: 10px 0;
+            display: none;
+        }
+        
         .about-content {
-            max-width: 400px;
-            margin: 0 auto;
+            width: 100%;
             padding: 20px;
-            background-color: var(--card-bg);
-            border-radius: 10px;
-            box-shadow: 0 4px 15px rgba(0, 0, 0, 0.1);
-        }
-
-        .about-title {
-            font-size: 1.5rem;
-            margin-bottom: 15px;
-            color: var(--accent-color);
-        }
-
-        .about-text {
             line-height: 1.6;
         }
-
-        .countdown {
-            font-weight: bold;
-            color: var(--accent-color);
-        }
-
-        .result-text {
-            font-size: 1.5rem;
-            margin-top: 20px;
+        
+        .about-title {
+            font-size: 24px;
+            margin-bottom: 20px;
             color: var(--accent-color);
             text-align: center;
+        }
+        
+        .about-text {
+            margin-bottom: 15px;
+        }
+        
+        .overlay {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background-color: rgba(0, 0, 0, 0.5);
+            z-index: 99;
             display: none;
+        }
+        
+        .overlay.active {
+            display: block;
         }
     </style>
 </head>
 <body>
-    <nav class="navbar">
-        <button class="theme-toggle" id="themeToggle">🌓</button>
+    <header>
+        <button class="theme-toggle">🌓</button>
         <div class="logo">18脱衣</div>
-        <button class="menu-toggle" id="menuToggle">☰</button>
-        <div class="menu-items" id="menuItems">
-            <a href="#" class="menu-item" data-page="home">主页</a>
-            <a href="#" class="menu-item" data-page="about">关于</a>
-        </div>
-    </nav>
-
-    <div class="content">
-        <div class="page active" id="home">
-            <div class="upload-container">
-                <button class="upload-btn" id="uploadBtn">上传图片</button>
-                <input type="file" id="fileInput" accept="image/*" style="display: none;">
-                <div class="preview-container" id="previewContainer">
-                    <img src="" alt="Preview" class="preview-image" id="previewImage">
+        <button class="menu-toggle">☰</button>
+    </header>
+    
+    <div class="overlay"></div>
+    
+    <div class="menu">
+        <a href="#" class="menu-item" data-page="home">主页</a>
+        <a href="#" class="menu-item" data-page="about">关于</a>
+    </div>
+    
+    <main>
+        <div class="page home active">
+            <button class="upload-btn">上传图片</button>
+            <div class="preview-container">
+                <img src="" alt="预览图片" class="preview-image">
+                <span>图片预览区域</span>
+            </div>
+            
+            <div class="progress-container">
+                <div class="progress-text">生成中... <span class="countdown">15</span>秒</div>
+                <div class="progress-bar">
+                    <div class="progress-fill"></div>
                 </div>
-                <div class="status" id="status"></div>
-                <div class="result-text" id="resultText"></div>
+            </div>
+            
+            <div class="result-message fail-message">生成失败，请换一张图片试试吧！</div>
+            
+            <button class="retry-btn">再次上传</button>
+            
+            <div class="result-message success-message">
+                <p>Hi,Mr.Joker！</p>
+                <img src="https://i0.hdslb.com/bfs/archive/80ce1226ba73627b3d98853f16175e0cf9ec1953.jpg" alt="生成结果" class="preview-image" style="display: block; margin-top: 20px;">
             </div>
         </div>
-
-        <div class="page" id="about">
+        
+        <div class="page about">
             <div class="about-content">
                 <h2 class="about-title">关于</h2>
                 <p class="about-text">制作人 - DWQ</p>
             </div>
         </div>
-    </div>
-
+    </main>
+    
     <script>
-        // DOM Elements
-        const themeToggle = document.getElementById('themeToggle');
-        const menuToggle = document.getElementById('menuToggle');
-        const menuItems = document.getElementById('menuItems');
-        const fileInput = document.getElementById('fileInput');
-        const uploadBtn = document.getElementById('uploadBtn');
-        const previewContainer = document.getElementById('previewContainer');
-        const previewImage = document.getElementById('previewImage');
-        const statusElement = document.getElementById('status');
-        const resultText = document.getElementById('resultText');
-        const pages = document.querySelectorAll('.page');
-        const menuLinks = document.querySelectorAll('.menu-item');
-
-        // Theme toggle
+        // 主题切换
+        const themeToggle = document.querySelector('.theme-toggle');
+        const body = document.body;
+        
         themeToggle.addEventListener('click', () => {
-            const currentTheme = document.documentElement.getAttribute('data-theme');
-            if (currentTheme === 'light') {
-                document.documentElement.removeAttribute('data-theme');
-                themeToggle.textContent = '🌓';
+            if (body.getAttribute('data-theme') === 'light') {
+                body.setAttribute('data-theme', 'dark');
             } else {
-                document.documentElement.setAttribute('data-theme', 'light');
-                themeToggle.textContent = '🌒';
+                body.setAttribute('data-theme', 'light');
             }
         });
-
-        // Menu toggle
-        let menuOpen = false;
+        
+        // 菜单切换
+        const menuToggle = document.querySelector('.menu-toggle');
+        const menu = document.querySelector('.menu');
+        const overlay = document.querySelector('.overlay');
+        
         menuToggle.addEventListener('click', () => {
-            menuOpen = !menuOpen;
-            menuItems.classList.toggle('active');
-            menuToggle.textContent = menuOpen ? '✕' : '☰';
+            menu.classList.toggle('active');
+            overlay.classList.toggle('active');
+            
+            if (menu.classList.contains('active')) {
+                menuToggle.textContent = '✕';
+            } else {
+                menuToggle.textContent = '☰';
+            }
         });
-
-        // Page navigation
-        menuLinks.forEach(link => {
-            link.addEventListener('click', (e) => {
+        
+        overlay.addEventListener('click', () => {
+            menu.classList.remove('active');
+            overlay.classList.remove('active');
+            menuToggle.textContent = '☰';
+        });
+        
+        // 页面切换
+        const menuItems = document.querySelectorAll('.menu-item');
+        const pages = document.querySelectorAll('.page');
+        
+        menuItems.forEach(item => {
+            item.addEventListener('click', (e) => {
                 e.preventDefault();
-                const targetPage = link.getAttribute('data-page');
+                const pageName = item.getAttribute('data-page');
                 
-                // Hide all pages
                 pages.forEach(page => {
                     page.classList.remove('active');
+                    if (page.classList.contains(pageName)) {
+                        page.classList.add('active');
+                    }
                 });
                 
-                // Show target page
-                document.getElementById(targetPage).classList.add('active');
-                
-                // Close menu
-                menuOpen = false;
-                menuItems.classList.remove('active');
+                menu.classList.remove('active');
+                overlay.classList.remove('active');
                 menuToggle.textContent = '☰';
             });
         });
-
-        // Upload functionality
+        
+        // 上传功能
+        const uploadBtn = document.querySelector('.upload-btn');
+        const previewContainer = document.querySelector('.preview-container');
+        const previewImage = document.querySelector('.preview-image');
+        const progressContainer = document.querySelector('.progress-container');
+        const progressFill = document.querySelector('.progress-fill');
+        const countdown = document.querySelector('.countdown');
+        const failMessage = document.querySelector('.fail-message');
+        const retryBtn = document.querySelector('.retry-btn');
+        const successMessage = document.querySelector('.success-message');
+        
         uploadBtn.addEventListener('click', () => {
+            // 模拟文件选择
+            const fileInput = document.createElement('input');
+            fileInput.type = 'file';
+            fileInput.accept = 'image/*';
+            
+            fileInput.addEventListener('change', (e) => {
+                const file = e.target.files[0];
+                if (file) {
+                    const reader = new FileReader();
+                    
+                    reader.onload = (event) => {
+                        previewImage.src = event.target.result;
+                        previewImage.style.display = 'block';
+                        previewContainer.querySelector('span').style.display = 'none';
+                        
+                        // 开始上传过程
+                        startUploadProcess();
+                    };
+                    
+                    reader.readAsDataURL(file);
+                }
+            });
+            
             fileInput.click();
         });
-
-        fileInput.addEventListener('change', (e) => {
-            const file = e.target.files[0];
-            if (file) {
-                const reader = new FileReader();
-                reader.onload = (event) => {
-                    previewImage.src = event.target.result;
-                    previewContainer.style.display = 'block';
-                    uploadImage();
-                };
-                reader.readAsDataURL(file);
-            }
-        });
-
-        function uploadImage() {
-            // Simulate upload to 123 cloud
-            statusElement.textContent = '上传中...';
+        
+        function startUploadProcess() {
+            uploadBtn.style.display = 'none';
+            progressContainer.style.display = 'block';
+            failMessage.style.display = 'none';
+            successMessage.style.display = 'none';
+            retryBtn.style.display = 'none';
             
-            setTimeout(() => {
-                statusElement.textContent = '上传成功！';
+            let seconds = 15;
+            countdown.textContent = seconds;
+            
+            const interval = setInterval(() => {
+                seconds--;
+                countdown.textContent = seconds;
                 
-                // First countdown (15 seconds)
-                let seconds = 15;
-                statusElement.innerHTML = `生成中... <span class="countdown">${seconds}</span>秒`;
+                const progress = ((15 - seconds) / 15) * 100;
+                progressFill.style.width = `${progress}%`;
                 
-                const countdownInterval = setInterval(() => {
-                    seconds--;
-                    statusElement.innerHTML = `生成中... <span class="countdown">${seconds}</span>秒`;
-                    
-                    if (seconds <= 0) {
-                        clearInterval(countdownInterval);
-                        statusElement.textContent = '生成失败，请换一张图片试试吧！';
-                        
-                        // Reset for second attempt
-                        setTimeout(() => {
-                            let secondAttemptSeconds = 5;
-                            statusElement.innerHTML = `再次尝试中... <span class="countdown">${secondAttemptSeconds}</span>秒`;
-                            
-                            const secondCountdown = setInterval(() => {
-                                secondAttemptSeconds--;
-                                statusElement.innerHTML = `再次尝试中... <span class="countdown">${secondAttemptSeconds}</span>秒`;
-                                
-                                if (secondAttemptSeconds <= 0) {
-                                    clearInterval(secondCountdown);
-                                    previewImage.src = 'https://i0.hdslb.com/bfs/archive/80ce1226ba73627b3d98853f16175e0cf9ec1953.jpg';
-                                    resultText.textContent = 'Hi,Mr.Joker!';
-                                    resultText.style.display = 'block';
-                                }
-                            }, 1000);
-                        }, 2000);
-                    }
-                }, 1000);
-            }, 1500);
+                if (seconds <= 0) {
+                    clearInterval(interval);
+                    showFailMessage();
+                }
+            }, 1000);
+        }
+        
+        function showFailMessage() {
+            progressContainer.style.display = 'none';
+            failMessage.style.display = 'block';
+            retryBtn.style.display = 'block';
+        }
+        
+        retryBtn.addEventListener('click', () => {
+            retryBtn.style.display = 'none';
+            failMessage.style.display = 'none';
+            progressContainer.style.display = 'block';
+            
+            let seconds = 5;
+            countdown.textContent = seconds;
+            progressFill.style.width = '0%';
+            
+            const interval = setInterval(() => {
+                seconds--;
+                countdown.textContent = seconds;
+                
+                const progress = ((5 - seconds) / 5) * 100;
+                progressFill.style.width = `${progress}%`;
+                
+                if (seconds <= 0) {
+                    clearInterval(interval);
+                    showSuccessMessage();
+                }
+            }, 1000);
+        });
+        
+        function showSuccessMessage() {
+            progressContainer.style.display = 'none';
+            successMessage.style.display = 'block';
+            uploadBtn.style.display = 'block';
         }
     </script>
 </body>
